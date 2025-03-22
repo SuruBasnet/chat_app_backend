@@ -21,7 +21,7 @@ from base.views import  AiChatApi,UserApiView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("ai-chat/",AiChatApi.as_view({'post':'ai_create'})),
-    path("register/",UserApiView.as_view({'post':'register'})),
-    path("login/",UserApiView.as_view({'post':'login'}))
+    path("api/v1/ai-chat/",AiChatApi.as_view({'post':'ai_create'})),
+    path("api/v1/register/",UserApiView.as_view({'post':'register'})),
+    path("api/v1/login/",UserApiView.as_view({'post':'login'}))
 ]
