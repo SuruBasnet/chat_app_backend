@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-##!k0^3uzvh7$6m+q*&ejooqhspru)sl!k-gsayk877+#_ov80
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhot','surutest.pythonanywhere.com']
 
 AUTH_USER_MODEL = 'base.User'
 
@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "base",
     "rest_framework",
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -73,6 +75,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "chat_app_backend.wsgi.application"
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
