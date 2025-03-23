@@ -33,6 +33,8 @@ def chat_gemini(msg,scrape_html=None):
         res = requests.post(url=f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",data=f'{complete_msg_json}')
     else:  
         res = requests.post(url=f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",data=f'{complete_msg_link}')
+
+    
     return res
 
 class AiChatApi(GenericViewSet):
@@ -46,8 +48,12 @@ class AiChatApi(GenericViewSet):
             chat_res = chat_gemini(user_message,scrape_html_content)
         else:
             chat_res = chat_gemini(user_message)
+        
         if chat_res.status_code == 400:
             return Response(chat_res.json(),status=status.HTTP_400_BAD_REQUEST)
+        
+
+
         return Response(chat_res.json())
     
 class UserApiView(GenericViewSet):
@@ -66,8 +72,9 @@ class UserApiView(GenericViewSet):
         data['password'] = hash_password
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            token,_ = Token.objects.get_or_create(user=user)    
+            return Response({'token':token.key})
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
