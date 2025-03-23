@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import User
 
 class AiChatSerializer(serializers.Serializer):
-    user_message = serializers.CharField()
+    message = serializers.CharField()
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:

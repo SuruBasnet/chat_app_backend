@@ -13,37 +13,38 @@ from rest_framework.permissions import IsAuthenticated
 GEMINI_API_KEY = "AIzaSyB206AXvkDhchrCo1qXtZsc4ihFqC5NRcQ"
 def link_scraper(link):
     scraper = cloudscraper.create_scraper()
-    html_content = scraper.get("http://somesite.com").text
+    html_content = scraper.get(link).text 
     return html_content
 
 
 def chat_gemini(msg,scrape_html=None):
-    complete_msg = {
-    "contents": [{
-        "parts":[{"text": f"{msg}"}]
-        }]
-    }
-    complete_msg_link = {
-    "contents": [{
-        "parts":[{"text": f"summarize the content of this html: {msg}"}]
-        }]
-    }
-    complete_msg_json = json.dumps(complete_msg)
     if scrape_html == None:
+        complete_msg = {
+        "contents": [{
+            "parts":[{"text": f"{msg}"}]
+            }]
+        }
+        complete_msg_json = json.dumps(complete_msg)
         res = requests.post(url=f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",data=f'{complete_msg_json}')
     else:  
-        res = requests.post(url=f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",data=f'{complete_msg_link}')
+        complete_msg_link = {
+        "contents": [{
+            "parts":[{"text": f"summarize the content of this html: {scrape_html}"}]
+            }]
+        }
+        complete_msg_json_link = json.dumps(complete_msg_link)
+        res = requests.post(url=f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",data=f'{complete_msg_json_link}')
 
     
     return res
 
 class AiChatApi(GenericViewSet):
     serializer_class = AiChatSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def ai_create(self,request):
         user_message = request.data.get('message') 
-        if "https" in user_message:
+        if "https" or ".com" in user_message:
             scrape_html_content = link_scraper(user_message)
             chat_res = chat_gemini(user_message,scrape_html_content)
         else:
@@ -52,8 +53,6 @@ class AiChatApi(GenericViewSet):
         if chat_res.status_code == 400:
             return Response(chat_res.json(),status=status.HTTP_400_BAD_REQUEST)
         
-
-
         return Response(chat_res.json())
     
 class UserApiView(GenericViewSet):
