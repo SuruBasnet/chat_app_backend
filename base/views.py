@@ -11,8 +11,14 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 GEMINI_API_KEY = "AIzaSyB206AXvkDhchrCo1qXtZsc4ihFqC5NRcQ"
+
+proxies = {
+    "http": "http://103.125.174.62:8080"
+}
+
 def link_scraper(link):
     scraper = cloudscraper.create_scraper()
+    scraper.proxies.update(proxies)
     html_content = scraper.get(link).text 
     return html_content
 
