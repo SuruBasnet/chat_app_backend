@@ -44,7 +44,7 @@ class AiChatApi(GenericViewSet):
 
     def ai_create(self,request):
         user_message = request.data.get('message') 
-        if "https" or ".com" in user_message:
+        if "https" in user_message:
             scrape_html_content = link_scraper(user_message)
             chat_res = chat_gemini(user_message,scrape_html_content)
         else:
