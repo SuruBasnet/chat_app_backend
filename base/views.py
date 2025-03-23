@@ -40,7 +40,7 @@ class AiChatApi(GenericViewSet):
     permission_classes = [IsAuthenticated]
 
     def ai_create(self,request):
-        user_message = request.data.get('user_message') 
+        user_message = request.data.get('message') 
         if "https" in user_message:
             scrape_html_content = link_scraper(user_message)
             chat_res = chat_gemini(user_message,scrape_html_content)
