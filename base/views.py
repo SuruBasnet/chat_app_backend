@@ -29,7 +29,7 @@ def chat_gemini(msg,scrape_html=None):
     else:  
         complete_msg_link = {
         "contents": [{
-            "parts":[{"text": f"summarize the content of this html: {scrape_html}"}]
+            "parts":[{"text": f"summarize the content : {scrape_html}"}]
             }]
         }
         complete_msg_json_link = json.dumps(complete_msg_link)
